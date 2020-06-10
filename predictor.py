@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
-from gridextractor import *
+
 
 model = tf.keras.models.load_model('scanned_digit2.h5')
 # model.summary()

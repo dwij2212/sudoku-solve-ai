@@ -1,9 +1,7 @@
 import numpy as np
 import cv2.cv2 as cv2
-#somehow import cv2 gives problems in vscode
-# from matplotlib import pyplot as plt
 import operator
-# import tensorflow as tf
+
 
 
 def pre_process_image(img, skip_dilate=False, do_erode = False, kernel_digit = 5):

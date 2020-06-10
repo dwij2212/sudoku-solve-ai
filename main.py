@@ -1,5 +1,5 @@
-from gridextractor import *
-from predictor import *
+from gridextractor import pre_process_image, find_corners_of_largest_polygon, crop_and_warp, infer_grid, show_image,get_digits
+from predictor import model, predict_sudoku, print_sudoku
 import cv2.cv2 as cv2
 from photocapture import capture
 
@@ -25,19 +25,34 @@ def main():
     #extract digits of size 28 from cropped image, we then predict on these extracted digits
     digits = get_digits(cropped, squares, size=28)
     
-
-    final = digits[1].reshape(-1,28,28,1)/255
-
-    pred = model.predict(final)
-    print(pred)
-
     def change_sudoku(sudoku, i, j, n):
         sudoku[i][j] = n
+    
+    def make_change():
+        while True:
+            
+            print("satisfied? (y/n)")
+            ch = input()
+            if ch == 'y' or 'Y':
+                break
 
+            print("first number, then row number(starts from 0), then column number(Starts from 0)")
+            num = int(input())
+            i = int(input())
+            j = int(input())
+
+            change_sudoku(sudoku, i, j, num)
+
+            
+
+    
+    #predict grid
     sudoku = predict_sudoku(digits)
 
     print_sudoku(sudoku)
 
+    #ask if any changes required
+    make_change()
 
 
 

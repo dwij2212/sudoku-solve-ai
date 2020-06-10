@@ -1,7 +1,7 @@
 import numpy as np
 import cv2.cv2 as cv2
 #somehow import cv2 gives problems in vscode
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 import operator
 # import tensorflow as tf
 

@@ -1,9 +1,7 @@
 import numpy as np
 import cv2.cv2 as cv2
-#somehow import cv2 gives problems in vscode
-from matplotlib import pyplot as plt
 import operator
-# import tensorflow as tf
+
 
 
 def pre_process_image(img, skip_dilate=False, do_erode = False, kernel_digit = 5):
@@ -42,7 +40,7 @@ def show_image(img):
 
 def find_corners_of_largest_polygon(img):
 	"""Finds the 4 extreme corners of the largest contour in the image."""
-	contours, h = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
+	contours, _ = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
 	#assuming sudoku is clearly visible and one of the biggest elements of the photo,
 	#the sudoku will then cover the largest contour area
 	contours = sorted(contours, key=cv2.contourArea, reverse=True) 
@@ -118,12 +116,13 @@ def crop_and_warp(img, crop_rect):
 	# Describe a square with side of the calculated length, this is the new perspective we want to warp to
 	dst = np.array([[0, 0], [side - 1, 0], [side - 1, side - 1], [0, side - 1]], dtype='float32')
 
-	# Gets the transformation matrix for skewing the image to fit a square by comparing the 4 before and after points
+	# Gets the transformation matrix
 	m = cv2.getPerspectiveTransform(src, dst)
 
 	# Performs the transformation on the original image
 	return cv2.warpPerspective(img, m, (int(side), int(side)))
 
+#credits for next 2 functions akash jawar
 def scale_and_centre(img, size, margin=0, background=0):
 	"""Scales and centres an image onto a new background square."""
 	h, w = img.shape[:2]

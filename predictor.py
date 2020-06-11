@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
-from gridextractor import *
+from tensorflow.keras.preprocessing.image import ImageDataGenerator, NumpyArrayIterator
 
 model = tf.keras.models.load_model('scanned_digit2.h5')
 # model.summary()
@@ -63,6 +63,11 @@ def predict_image(img):
 
   pred = model.predict(final)
 
+  #to print digits about which NN is not sure about.
+  if np.max(pred) < 0.9:
+
+    return np.argmax(pred) + 0.5 
+
   return np.argmax(pred)
 
 
@@ -82,18 +87,60 @@ def predict_sudoku(digits):
 
 
 def print_sudoku(sudoku):
-  i,j = sudoku.shape
-  if i != 9 and j != 9:
-    print("Not valid puzzle")
+  if sudoku is None:
+    print("No solution")
   
   else:
+    sudoku = np.array(sudoku)
+    i,j = sudoku.shape
+    if i != 9 and j != 9:
+      print("Not valid puzzle")
+    
+    else:
+      for i in range(9):
+        for j in range(9):
+          if sudoku[i][j] != 0 and (sudoku[i][j] - int(sudoku[i][j]) == 0):
+            print("%s    " % int(sudoku[i][j]), end="")
+          
+          elif sudoku[i][j] != 0 and (sudoku[i][j] - int(sudoku[i][j]) != 0):
+            print("%s  " % (sudoku[i][j]), end="")
+            
+          else:
+            print("X    ", end ="")
+        print()
+        
+
+def train_model(sudoku, epochs = 5, digits = None):
+  """retrains model on new set of images to increase accuracy in future"""
+
+  if digits is not None:
+    print("Now fitting model on new data.")
+
+    train_images = np.empty((0,28,28,1))
+    train_labels = np.empty((0))
+
     for i in range(9):
       for j in range(9):
         if sudoku[i][j] != 0:
-          print("%s  " % int(sudoku[i][j]), end="")
 
-        else:
-          print("X  ", end ="")
-      print()
-        
+          img = digits[i*9 + j]
+          img = img.reshape(1,28,28,1)
+          train_images = np.append(train_images, img, axis = 0)
+          train_labels = np.append(train_labels, sudoku[i][j])
 
+    train_images = train_images/255.0
+    train_labels = keras.utils.to_categorical(train_labels)
+
+    datagen = ImageDataGenerator(rotation_range=5, data_format="channels_last", validation_split=0.1)
+    train_data = datagen.flow(x=train_images, y=train_labels)
+
+    #load model
+    model = tf.keras.models.load_model('scanned_digit2.h5')
+
+    #retrain model on new images
+    model.fit(train_data, epochs=5, verbose=0)
+    print("Successfully upgraded your model.")
+
+    #save the model
+    model.save('scanned_digit2.h5', save_format='h5')
+    print("Successfully saved your model.")

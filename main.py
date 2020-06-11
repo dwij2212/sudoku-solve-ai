@@ -1,12 +1,20 @@
 from gridextractor import pre_process_image, find_corners_of_largest_polygon, crop_and_warp, infer_grid, show_image,get_digits
-from predictor import model, predict_sudoku, print_sudoku
+from predictor import model, predict_sudoku, print_sudoku, train_model
 import cv2.cv2 as cv2
 from photocapture import capture
+from solve import solve, isinvalid
+
+#Upgrade model with new data i.e. train model with existing digits
+#WARNING: Keep this false until and unless you want to retrain your model which is computationally expensive.
+UPGRADE_MODEL = False
 
 def main():
-    #get image from camera
-    img = capture()
-    
+    #get image from camera or local path
+    img = cv2.imread('sudokuimg.jpg', 0)
+
+    #uncomment this line and comment line above this to capture image from your camera and solve
+    # img = capture()
+
     #pre-process image
     proc = pre_process_image(img)
 
@@ -29,31 +37,45 @@ def main():
         sudoku[i][j] = n
     
     def make_change():
+
         while True:
-            
-            print("satisfied? (y/n)")
-            ch = input()
-            if ch == 'y' or 'Y':
+
+            ch = input("Satisfied? (y/n)")
+            change_required = isinvalid(sudoku)
+            if ch == 'n' or ch == 'N' or change_required:
+
+                num = int(input("Enter corrected number: "))
+                i = int(input("row number(starts from 0): "))
+                j = int(input("col number(starts from 0): "))
+                change_sudoku(sudoku, i, j, num)
+                print_sudoku(sudoku)
+
+            elif ch == 'y' or ch == 'Y':
                 break
 
-            print("first number, then row number(starts from 0), then column number(Starts from 0)")
-            num = int(input())
-            i = int(input())
-            j = int(input())
-
-            change_sudoku(sudoku, i, j, num)
-
+            else:
+                print("Enter valid input.")
             
 
     
-    #predict grid
+    #predict and print grid
     sudoku = predict_sudoku(digits)
 
+    print("Those numbers with decimals are those about which model is unsure of.")
+    print("Please check those numbers and correct them.")
+    print("Also just have a quick look at other numbers to verify if they are correct.")
     print_sudoku(sudoku)
 
     #ask if any changes required
     make_change()
+    train_sudoku = sudoku
+    solved = solve(sudoku)
 
+    if UPGRADE_MODEL and solved is not None:
+        train_model(sudoku = train_sudoku, epochs=5, digits = digits)
+
+    print("Answer: ")
+    print_sudoku(solved)
 
 
 

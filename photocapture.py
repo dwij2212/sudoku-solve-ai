@@ -55,4 +55,3 @@ def capture():
             print("Error in capturing image.")
 
     
-capture()

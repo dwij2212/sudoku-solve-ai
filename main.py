@@ -10,10 +10,14 @@ UPGRADE_MODEL = False
 
 def main():
     #get image from camera or local path
+    img = capture()
     img = cv2.imread('sudokuimg.jpg', 0)
 
-    #uncomment this line and comment line above this to capture image from your camera and solve
+    #uncomment line 16,17 and comment line 13 to capture image from your camera and solve
     # img = capture()
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+
 
     #pre-process image
     proc = pre_process_image(img)

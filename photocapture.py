@@ -4,7 +4,7 @@ import cv2.cv2 as cv2
 def capture_img():
     """Returns None if image is not captured and returns an image if successfully captured"""
     cam = cv2.VideoCapture(0)
-    cv2.namedWindow("Capture")
+
 
     while True:
         ret, frame = cam.read()
@@ -41,10 +41,13 @@ def capture():
 
         if img is not None:
             #show the captured image
-            print("Captured image will be shown, input 'y' if its correct.")
-            cv2.imshow('captured', img)
+            print("Captured image will be shown")
+            
+            cv2.imshow('Captured  (Press any key to continue)', img)
             cv2.waitKey()
             cv2.destroyAllWindows()
+
+            print("Input 'y' if satisfied, or input 'n' if you want to retake.")
             ch = input("Y/y or N/n:")
             if ch == 'Y' or ch == 'y':
                 return img

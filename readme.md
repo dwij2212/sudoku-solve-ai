@@ -34,8 +34,25 @@ Now run the following command in your terminal to run the program.
 ```bash
 python3 main.py
 ```
+## Modify how your program works
+In the file main.py, make the following changes to capture image from your camera.
+```python
+#get image from camera or local path
+#img = cv2.imread('sudokuimg.jpg', 0)
 
+#uncomment this line and comment line above this to capture image from your camera and solve
+img = capture()
+img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+```
 
+## Upgrade model
+What upgrading your model basically means is fitting your model on the data fed to program during runtime.
+Make sure all data fed to the model is correct i.e. the sudoku is printed correctly before training or else model will become inaccurate.
+This can be enabled by making the following change in main.py
+```python
+UPGRADE_MODEL = True
+```
+Since this step is computationally expensive for large dataset, it is False by default.
 
 
 

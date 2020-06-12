@@ -10,7 +10,6 @@ UPGRADE_MODEL = False
 
 def main():
     #get image from camera or local path
-    img = capture()
     img = cv2.imread('sudokuimg.jpg', 0)
 
     #uncomment line 16,17 and comment line 13 to capture image from your camera and solve

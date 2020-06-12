@@ -54,5 +54,11 @@ UPGRADE_MODEL = True
 ```
 Since this step is computationally expensive for large dataset, it is False by default.
 
+## Limitations
+Limitations are listed as below. If you have any suggestions then feel free to submit a PR.
+
+1. The program can identify sudoku grids only if the image contains well defined borders of the outermost square of the puzzle.
+2. The program assumes that the puzzle occupies ample space in the image.
+3. Program can detect only 1 grid if more than 1 puzzles are shown to it.
 
 
